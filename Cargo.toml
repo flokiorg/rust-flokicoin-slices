@@ -1,0 +1,45 @@
+[package]
+name = "bitcoin_slices"
+version = "0.9.1"
+edition = "2021"
+authors = ["Riccardo Casatta <riccardo@casatta.it>"]
+description = "Parse Bitcoin objects without allocations"
+repository = "https://github.com/RCasatta/bitcoin_slices"
+documentation = "https://docs.rs/bitcoin_slices/"
+keywords = ["bitcoin", "blocks", "transaction", "parse", "slices"]
+categories = ["no-std", "cryptography::cryptocurrencies", "encoding"]
+readme = "README.md"
+license = "MIT"
+
+[dependencies]
+bitcoin = { path="../rust-flokicoin/bitcoin", version = "0.32.5", optional = true }
+bitcoin_hashes = { version = "0.14", optional = true }
+sha2 = { version = "0.10", optional = true }
+redb = { version = "1.0", optional = true }
+hashbrown = { version = "0.14", optional = true }
+prometheus = { version = "0.13.4", optional = true }
+
+[features]
+default = []
+bitcoin_hashes = ["dep:bitcoin_hashes"]
+sha2 = ["dep:sha2"]
+redb = ["dep:redb"]
+bitcoin = ["dep:bitcoin", "bitcoin_hashes"]
+slice_cache = ["dep:hashbrown"]
+prometheus = ["dep:prometheus", "slice_cache"]
+
+[dev-dependencies]
+bitcoin = { path="../rust-flokicoin/bitcoin", version = "0.32.5", features = ["rand"] }
+hex_lit = { version = "0.1", features = ["rust_v_1_46"] }
+bitcoin-test-data = "0.2.0"
+tempfile = "3.4.0"
+criterion = "0.3"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[[bench]]
+name = "benches"
+harness = false
+required-features = ["bitcoin_hashes", "bitcoin", "sha2"]
